@@ -1,90 +1,76 @@
-//App Component
+const initialState = `
+This is a paragraph
+
+**This Bold**
+
+> Block Quotes!
+
+
+# Welcome!
+
+
+## Heading 2
+
+- list item 1
+- list item 2
+- list item 3
+
+[click for more](https://kobbycode.com)
+
+This an inline \`<div></div>\`
+
+this is a block of code
+
+\`\`\`
+let x = 5;
+let y = 8;
+let k = x + y;
+\`\`\`
+
+![React](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii0xMS41IC0xMC4yMzE3NCAyMyAyMC40NjM0OCI+CiAgPHRpdGxlPlJlYWN0IExvZ288L3RpdGxlPgogIDxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIyLjA1IiBmaWxsPSIjNjFkYWZiIi8+CiAgPGcgc3Ryb2tlPSIjNjFkYWZiIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiPgogICAgPGVsbGlwc2Ugcng9IjExIiByeT0iNC4yIi8+CiAgICA8ZWxsaXBzZSByeD0iMTEiIHJ5PSI0LjIiIHRyYW5zZm9ybT0icm90YXRlKDYwKSIvPgogICAgPGVsbGlwc2Ugcng9IjExIiByeT0iNC4yIiB0cmFuc2Zvcm09InJvdGF0ZSgxMjApIi8+CiAgPC9nPgo8L3N2Zz4K)
+`;
+
+
+
+
+
+
+
 class App extends React.Component {
-  constructor(){
-    super();
-    this.state = ({
-      color: "purple"
-    });
-    
-    this.handleColorChange = this.handleColorChange.bind(this);
+  state = {
+    text: initialState
   }
-  
-  //Change the color of the App
-  handleColorChange(color){
+  handleChange = (e) => {
     this.setState({
-      color: color
-    });
+      text: e.target.value
+    })
   }
-  
-  render() {
-    return (
-      <div id="app" className={this.state.color}>
-        <QuoteBox onChangeAppColor={this.handleColorChange} color={this.state.color} />
-      </div>
-    );
-  }
-}
-
-//Quote Box Component
-class QuoteBox extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      quoteText: "",
-      quoteAuthor: "",
-      curColor: this.props.color,
-      tweetUrl: "https://twitter.com/intent/tweet/?text="
-    }
+  render () {
+    const {text} = this.state;
+    const markdown = marked(text, {breaks: true});
     
-    this.getNewQuote();
     
-    //Bind Handles and Functions
-    this.getNewQuote = this.getNewQuote.bind(this);
-    this.handleNewQuote = this.handleNewQuote.bind(this);
-  }
-  
-  //Get a quote and author from an API and set state
-  getNewQuote(){
-    const app = this;
-    fetch('https://api.quotable.io/random')
-    .then((response) => response.json())
-    .then((data) => {
-      app.setState({
-        quoteText: data.content,
-        quoteAuthor: data.author,
-        tweetUrl: "https://twitter.com/intent/tweet/?text=" + data.content.replace(/ /g, "+")
-      });
-    });
-  }
-  
-  //Handles the new quote button click
-  handleNewQuote(){
-    const colors = ["gray", "blue", "purple", "red", "orange", "green"];
-    let color = colors[Math.floor(Math.random() * colors.length)];
-    while(color == this.state.curColor){
-      color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    this.setState({
-      curColor: color
-    });
-    this.props.onChangeAppColor(color);
-    this.getNewQuote();
-  }
-  
-  render() {
     return (
-      <main id="quote-box">
-        <div id="quote-content">
-          <div id="text">{ this.state.quoteText }</div>
-          <div id="author">{ this.state.quoteAuthor }</div>
+       <div>
+        <h1 className = "center mt-5 mb-5"> Markdown Previewer </h1>
+        <div className = "row">
+          <div className = "col- 6 p-4">
+            <h4 className = "e-text text-center"> Editor </h4>
+            <textarea className = "form-control" id="editor" value = {text} onChange = {this.handleChange}/>
+          </div>
+          <div className = "col- 6 p-4">
+            <h4 className = "p-text text-center"> Previewer </h4>
+            <div className ="preview rounded" 
+              dangerouslySetInnerHTML = {{__html: markdown}} id="preview" />
+          </div>
         </div>
-        <button onClick={this.handleNewQuote} id="new-quote">Get New Quote</button>
-        <a href={ this.state.tweetUrl } target="_blank" id="tweet-quote"><i class="fab fa-twitter"></i> Tweet Quote</a>
-      </main>
+        <div>
+          <h5><i>Created By KobbyCode</i></h5>
+        </div>
+       </div>
     );
   }
 }
 
-
-//Printing to screen
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App/>, 
+document.getElementById('app'));

@@ -1,0 +1,25 @@
+body {
+  background: url(https://cutewallpaper.org/21/nice-background-pictures/Nice-Background-Click-Wallpapers-in-2019-Background-for-.jpg);
+}
+h1 {
+  color: white;
+}
+
+.e-text{
+  color: white;
+}
+
+.p-text{
+  color: white;
+}
+h5 {
+  color: #95a5a6
+}
+
+.preview {
+  background-color: white;
+}
+
+textarea, .preview {
+  min-height: 300px;
+}
